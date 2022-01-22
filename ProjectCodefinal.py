@@ -1,5 +1,8 @@
 from tkinter import *
 import tkinter as tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import tkinter as tk
 from PIL import ImageTk,Image
 import sqlite3
 import re
@@ -42,6 +45,39 @@ def final_ward():
     res_box.place(relx=0.5,rely=0.4)
     res_btn=Button(resulter,text="Fetch",command=final_searchward,fg="Green",activebackground = "black")
     res_btn.place(relx=0.45,rely=0.85)
+def create_charts_ward():
+    pier= tk.Tk()
+    canvas1 = tk.Canvas(pier, width = 100, height = 40)
+    canvas1.pack()
+    pier.title("Wardrobe result pie chart")
+    label1 = tk.Label(pier, text='Graphical User Interface')
+    label1.config(font=('Arial', 20))
+    global x1
+    global x2
+    global x3
+    global bar1
+    global pie2
+    x1 = float(res_zero)
+    x2 = float(res_one)
+    x3 = float(res_two)
+    
+    figure2 = Figure(figsize=(4,3), dpi=100) 
+    subplot2 = figure2.add_subplot(111) 
+    labels2 = 'Negative', 'Positive', 'Neutral' 
+    pieSizes = [float(x1),float(x2),float(x3)]
+    my_colors2 = ['lightblue','lightsteelblue','silver']
+    explode2 = (0, 0.1, 0)  
+    subplot2.pie(pieSizes, colors=my_colors2, explode=explode2, labels=labels2, autopct='%1.1f%%', shadow=True, startangle=90) 
+    subplot2.axis('equal')  
+    pie2 = FigureCanvasTkAgg(figure2, pier)
+    pie2.get_tk_widget().pack()
+    pier.mainloop()
+
+def clear_charts():
+    bar1.get_tk_widget().pack_forget()
+    pie2.get_tk_widget().pack_forget()
+            
+
 def final_searchward():
     global res_res
     res_res=res_box.get()
@@ -63,18 +99,7 @@ def final_searchward():
     plt.pie(slices,labels=outputs,colors=cols,startangle=90,shadow=True,explode=(0,0.1,0),autopct='%1.1f%%')
     plt.title("Final result")
     plt.show()
-    global pier
-    pier=Tk()
-    pier.title("PIE")
-    pier.iconbitmap()
-    tk.Label(pier, text='Pie Chart').pack()
-    c =tk.Canvas(width=154, height=154)
-    c.grid(row=5,column=5)
-    c.create_arc((2,2,152,152), fill="#FAF402", outline="#FAF402", start=prop(0), extent = prop(res_zero))
-    c.create_arc((2,2,152,152), fill="#2BFFF4", outline="#2BFFF4", start=prop(res_zero), extent = prop(res_one))
-    c.create_arc((2,2,152,152), fill="#E00022", outline="#E00022", start=prop(res_zero+res_one), extent = prop(res_two))
-
-    pier.mainloop()
+    create_charts_ward()
 def prop(n):
     return 360.0 * n / 1000
 
@@ -426,14 +451,14 @@ def senti(inputvalue):
         review = re.sub('[^a-zA-Z]',' ', dat[i])
         if(review not in set(stop_words)):
             corpus.append(review)
-    #print(corpus)
+    print(corpus)
     sid = SentimentIntensityAnalyzer()
     pos_word_list=[]
     neu_word_list=[]
     neg_word_list=[]
 
     for word in corpus:
-        #print(sia.polarity_scores(word))
+        print(sid.polarity_scores(word))
         if (sid.polarity_scores(word)['compound']) >= 0.4:
             pos_word_list.append(word)
         elif (sid.polarity_scores(word)['compound']) <= -0.4:
@@ -441,9 +466,9 @@ def senti(inputvalue):
         else:
             neu_word_list.append(word)                
             
-    if(len(pos_word_list)>len(neu_word_list)):
+    if(len(pos_word_list)>len(neg_word_list)):
         return 1
-    elif(len(pos_word_list)<len(neu_word_list)):
+    elif(len(pos_word_list)<len(neg_word_list)):
         return 0
         
     else:
@@ -624,6 +649,41 @@ def final_design():
     res_box.place(relx=0.5,rely=0.4)
     res_btn=Button(resulter1,text="Fetch",command=final_searchdesign,fg="Green",activebackground = "black")
     res_btn.place(relx=0.45,rely=0.85)
+    
+def create_charts_design():
+    pier= tk.Tk()
+  
+    canvas1 = tk.Canvas(pier, width = 100, height = 40)
+    canvas1.pack()
+    
+    label1 = tk.Label(pier, text='Graphical User Interface')
+    label1.config(font=('Arial', 20))
+    global x1
+    global x2
+    global x3
+    global bar1
+    global pie2
+    x1 = float(res_zero)
+    x2 = float(res_one)
+    x3 = float(res_two)
+    
+    figure2 = Figure(figsize=(4,3), dpi=100) 
+    subplot2 = figure2.add_subplot(111) 
+    labels2 = 'Negative', 'Positive', 'Neutral' 
+    pieSizes = [float(x1),float(x2),float(x3)]
+    my_colors2 = ['lightblue','lightsteelblue','silver']
+    explode2 = (0, 0.1, 0)  
+    subplot2.pie(pieSizes, colors=my_colors2, explode=explode2, labels=labels2, autopct='%1.1f%%', shadow=True, startangle=90) 
+    subplot2.axis('equal')  
+    pie2 = FigureCanvasTkAgg(figure2, pier)
+    pie2.get_tk_widget().pack()
+    pier.mainloop()
+
+def clear_charts():
+    bar1.get_tk_widget().pack_forget()
+    pie2.get_tk_widget().pack_forget()
+
+    
 def final_searchdesign():
     global res_res
     res_res=res_box.get()
@@ -645,18 +705,7 @@ def final_searchdesign():
     plt.pie(slices,labels=outputs,colors=cols,startangle=90,shadow=True,explode=(0,0.1,0),autopct='%1.1f%%')
     plt.title("Final result")
     plt.show()
-    global pier
-    pier=Tk()
-    pier.title("PIE")
-    pier.iconbitmap()
-    tk.Label(pier, text='Pie Chart').pack()
-    c =tk.Canvas(width=154, height=154)
-    c.grid(row=5,column=5)
-    c.create_arc((2,2,152,152), fill="#FAF402", outline="#FAF402", start=prop(0), extent = prop(res_zero))
-    c.create_arc((2,2,152,152), fill="#2BFFF4", outline="#2BFFF4", start=prop(res_zero), extent = prop(res_one))
-    c.create_arc((2,2,152,152), fill="#E00022", outline="#E00022", start=prop(res_zero+res_one), extent = prop(res_two))
-
-    pier.mainloop()
+    create_charts_design()
 
 def prop(n):
     return 360.0 * n / 1000
@@ -982,6 +1031,41 @@ def final_new():
     res_box.place(relx=0.5,rely=0.4)
     res_btn=Button(resulter2,text="Fetch",command=final_searchnew,fg="Green",activebackground = "black")
     res_btn.place(relx=0.45,rely=0.85)
+    
+def create_charts_new():
+    pier= tk.Tk()
+  
+    canvas1 = tk.Canvas(pier, width = 100, height = 40)
+    canvas1.pack()
+
+    label1 = tk.Label(pier, text='Graphical User Interface')
+    label1.config(font=('Arial', 20))
+    global x1
+    global x2
+    global x3
+    global bar1
+    global pie2
+    x1 = float(res_zero)
+    x2 = float(res_one)
+    x3 = float(res_two)
+    
+    figure2 = Figure(figsize=(4,3), dpi=100) 
+    subplot2 = figure2.add_subplot(111) 
+    labels2 = 'Negative', 'Positive', 'Neutral' 
+    pieSizes = [float(x1),float(x2),float(x3)]
+    my_colors2 = ['lightblue','lightsteelblue','silver']
+    explode2 = (0, 0.1, 0)  
+    subplot2.pie(pieSizes, colors=my_colors2, explode=explode2, labels=labels2, autopct='%1.1f%%', shadow=True, startangle=90) 
+    subplot2.axis('equal')  
+    pie2 = FigureCanvasTkAgg(figure2, pier)
+    pie2.get_tk_widget().pack()
+    pier.mainloop()
+
+def clear_charts():
+    bar1.get_tk_widget().pack_forget()
+    pie2.get_tk_widget().pack_forget()
+    
+
 def final_searchnew():
     global res_res
     res_res=res_box.get()
@@ -1014,6 +1098,7 @@ def final_searchnew():
     c.create_arc((2,2,152,152), fill="#2BFFF4", outline="#2BFFF4", start=prop(res_zero), extent = prop(res_one))
     c.create_arc((2,2,152,152), fill="#E00022", outline="#E00022", start=prop(res_zero+res_one), extent = prop(res_two))
     pier.mainloop()
+    create_charts_new()
 
 #function for uploading image into db for client side
 def new_upload():
